@@ -139,7 +139,7 @@ class TuyaClimate(ClimateEntity):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
 
-    def set_hvac_mode(self, hvac_mode):
+    def set_hvac_mode(self, mode: str):
         """Set new mode."""
         self._pulling_lock = True
         if (mode == "off" and self._enabled):
