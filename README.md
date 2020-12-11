@@ -1,9 +1,16 @@
 # HomeAssistant Tuya based floor thermostat MOES-HY09 custom component (Adapted from TheSDTM/HomeAssistant-BHT-002-GBLW-component)
 
 ## Notes
-Change between Program-Manual modes not work.
+
+Apparently it works:
+
+- Adjust temperature
+- Change between modes (Vacation mode not selectable)
+
 ## Setup
-Place manifest.json, \_\_init\_\_.py and climate.py into custom_components/tuya_climate. Then setup config.
+Place manifest.json, \_\_init\_\_.py and climate.py into custom_components/tuya_climate.
+Place pytuya folder into custom_components/tuya_climate.
+Then setup config.
 
 ## Configuration
 ```
