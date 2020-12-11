@@ -1,4 +1,4 @@
-# HomeAssistant Tuya based floor thermostat BHT-002-GBLW custom component
+# HomeAssistant Tuya based floor thermostat MOES-HY09 custom component (Adapted from TheSDTM/HomeAssistant-BHT-002-GBLW-component)
 
 ## Setup
 Place manifest.json, \_\_init\_\_.py and climate.py into custom_components/tuya_climate. Then setup config.
