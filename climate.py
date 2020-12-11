@@ -30,8 +30,8 @@ CONF_DEVICEID = "id"
 CONF_DEVICEKEY = "key"
 CONF_DEVICEIP = "ip"
 
-MIN_TEMP = 7
-MAX_TEMP = 30
+MIN_TEMP = 5
+MAX_TEMP = 35
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE
 
@@ -169,8 +169,8 @@ class TuyaClimate(ClimateDevice):
         if temperature is None:
             return
         self._pulling_lock = True
-        self._device.set_value("2", int(temperature * 2))
-        # self._target_temperature = temperature
+        self._device.set_value("2", int(temperature * 10))
+        self._target_temperature = temperature
         time.sleep(0.3)
         self._pulling_lock = False
         _LOGGER.warn("New temperature set")
@@ -191,11 +191,11 @@ class TuyaClimate(ClimateDevice):
                 self._current_mode = HVAC_MODE_HEAT
 
         if (dps["102"] != None):
-            self._floorTemp = dps["102"] / 2
+            self._floorTemp = dps["102"] / 10
         if (dps["2"] != None):
-            self._target_temperature = dps["2"] / 2
+            self._target_temperature = dps["2"] / 10
         if (dps["3"] != None):
-            self._current_temperature = dps["3"] / 2
+            self._current_temperature = dps["3"] / 10
 
         if (dps["6"] != None):
             self._lock = dps["6"]
