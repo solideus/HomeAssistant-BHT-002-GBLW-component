@@ -9,7 +9,7 @@ import voluptuous as vol
 import pytuya
 import time
 
-from homeassistant.components.climate import ClimateDevice, PLATFORM_SCHEMA
+from homeassistant.components.climate import ClimateEntity, PLATFORM_SCHEMA
 from homeassistant.components.climate.const import (
     HVAC_MODE_HEAT, HVAC_MODE_OFF, HVAC_MODE_AUTO, PRESET_AWAY, PRESET_COMFORT, PRESET_HOME, PRESET_SLEEP,
     SUPPORT_TARGET_TEMPERATURE, CURRENT_HVAC_HEAT,
@@ -23,7 +23,7 @@ __version__ = '1.0.0'
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(level=logging.DEBUG)
 
-DEFAULT_NAME = 'Tuya climate'
+DEFAULT_NAME = 'Termostato'
 
 CONF_NAME = 'name'
 CONF_DEVICEID = "id"
@@ -31,7 +31,7 @@ CONF_DEVICEKEY = "key"
 CONF_DEVICEIP = "ip"
 
 MIN_TEMP = 5
-MAX_TEMP = 35
+MAX_TEMP = 30
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE
 
@@ -51,7 +51,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     
     add_entities([TuyaClimate(name, device_id, device_key, device_ip)])
 
-class TuyaClimate(ClimateDevice):
+class TuyaClimate(ClimateEntity):
     """Representation of a Tuya climate device."""
 
     def __init__(self, name, device_id, device_key, device_ip):
@@ -139,7 +139,7 @@ class TuyaClimate(ClimateDevice):
         """Return the list of supported features."""
         return SUPPORT_FLAGS
 
-    def set_hvac_mode(self, mode: str):
+    def set_hvac_mode(self, hvac_mode):
         """Set new mode."""
         self._pulling_lock = True
         if (mode == "off" and self._enabled):
@@ -152,11 +152,11 @@ class TuyaClimate(ClimateDevice):
                 self._enabled = True
             if (mode == HVAC_MODE_HEAT and self._current_mode != HVAC_MODE_HEAT):
                 _LOGGER.warn("b")
-                self._device.set_value("4", '1')
+                self._device.set_value("4", 'Manual')
                 self._current_mode = HVAC_MODE_HEAT
             elif (mode == HVAC_MODE_AUTO and self._current_mode != HVAC_MODE_AUTO):
                 _LOGGER.warn("c")
-                self._device.set_value("4", '0')
+                self._device.set_value("4", 'Program')
                 self._current_mode = HVAC_MODE_AUTO
         _LOGGER.warn("New mode set")
         time.sleep(0.3)
@@ -185,10 +185,14 @@ class TuyaClimate(ClimateDevice):
                 self._enabled = True
 
         if (dps["4"] != None):
-            if (dps["4"] == "0"):
+            if (dps["4"] == "Program"):
                 self._current_mode = HVAC_MODE_AUTO
-            else:
+            if (dps["4"] == "TempProg"):
+                self._current_mode = HVAC_MODE_AUTO
+            if (dps["4"] == "Manual"):
                 self._current_mode = HVAC_MODE_HEAT
+            if (dps["4"] == "Holiday"):
+                self._current_mode = HVAC_MODE_AUTO
 
         if (dps["102"] != None):
             self._floorTemp = dps["102"] / 10
