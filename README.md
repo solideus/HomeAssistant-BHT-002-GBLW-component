@@ -6,6 +6,7 @@ Apparently it works:
 
 - Adjust temperature
 - Change between modes (Vacation mode not selectable)
+- Now reports when it's heating
 
 ## Setup
 Place manifest.json, \_\_init\_\_.py and climate.py into custom_components/tuya_climate.
