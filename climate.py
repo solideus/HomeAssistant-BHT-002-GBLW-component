@@ -12,8 +12,7 @@ import time
 from homeassistant.components.climate import ClimateEntity, PLATFORM_SCHEMA
 from homeassistant.components.climate.const import (
     HVAC_MODE_HEAT, HVAC_MODE_OFF, HVAC_MODE_AUTO, PRESET_AWAY, PRESET_COMFORT, PRESET_HOME, PRESET_SLEEP,
-    SUPPORT_TARGET_TEMPERATURE, CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE)
+    SUPPORT_TARGET_TEMPERATURE, CURRENT_HVAC_HEAT, CURRENT_HVAC_OFF, CURRENT_HVAC_IDLE,  )
 from homeassistant.const import (
     ATTR_TEMPERATURE, CONF_USERNAME, CONF_PASSWORD, TEMP_CELSIUS)
 import homeassistant.helpers.config_validation as cv
@@ -67,6 +66,8 @@ class TuyaClimate(ClimateEntity):
         self._target_temperature = None
         self._current_temperature = None
         self._lock = None
+        
+        self._is_heating_active = False
 
         self._pulling_lock = False
 
@@ -130,9 +131,7 @@ class TuyaClimate(ClimateEntity):
     @property
     def hvac_action(self):
         """Return the current running hvac operation."""
-        if self._target_temperature < self._current_temperature:
-            return CURRENT_HVAC_IDLE
-        return CURRENT_HVAC_HEAT
+        return self._is_heating_active
 
     @property
     def supported_features(self):
@@ -193,6 +192,12 @@ class TuyaClimate(ClimateEntity):
                 self._current_mode = HVAC_MODE_HEAT
             if (dps["4"] == "Holiday"):
                 self._current_mode = HVAC_MODE_AUTO
+                
+        if (dps["102"] != None):
+            if (dps["102"] == True):
+                self._is_heating_active = CURRENT_HVAC_HEAT
+            if (dps["102"] == False):
+                self._is_heating_active = CURRENT_HVAC_IDLE
 
         if (dps["102"] != None):
             self._floorTemp = dps["102"] / 10
