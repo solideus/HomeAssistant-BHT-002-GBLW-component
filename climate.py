@@ -199,12 +199,13 @@ class TuyaClimate(ClimateEntity):
             if (dps["102"] == False):
                 self._is_heating_active = CURRENT_HVAC_IDLE
 
-        if (dps["102"] != None):
-            self._floorTemp = dps["102"] / 10
+        # if (dps["102"] != None):
+            # self._floorTemp = dps["102"] / 10
         if (dps["2"] != None):
             self._target_temperature = dps["2"] / 10
         if (dps["3"] != None):
-            self._current_temperature = dps["3"] / 10
+            if (dps["3"] != 0):
+                self._current_temperature = dps["3"] / 10
 
         if (dps["6"] != None):
             self._lock = dps["6"]
