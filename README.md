@@ -7,7 +7,7 @@ Apparently it works:
 - Adjust temperature
 - Change between modes (Vacation mode not selectable)
 - Now reports when it's heating
-- Filter "0" reports values
+- Filter "0" reports values (2021/01/31)
 
 ## Setup
 Place manifest.json, \_\_init\_\_.py and climate.py into custom_components/tuya_climate.
